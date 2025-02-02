@@ -1,9 +1,9 @@
-// rspack.config.ts
 import { defineConfig } from "@rspack/cli";
 import { rspack } from "@rspack/core";
 import * as RefreshPlugin from "@rspack/plugin-react-refresh";
 import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 import { mfConfig } from "./module-federation.config";
+import * as path from "node:path";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -18,6 +18,23 @@ export default defineConfig({
   resolve: {
     extensions: ["...", ".ts", ".tsx", ".jsx"],
   },
+
+  devServer: {
+    port: 8080,
+    historyApiFallback: true,
+    watchFiles: [path.resolve(__dirname, "src")],
+  },
+  output: {
+    // You need to set a unique value that is not equal to other applications
+    uniqueName: "hello",
+    // publicPath must be configured if using manifest
+    publicPath: "http://localhost:8080/",
+  },
+
+  experiments: {
+    css: true,
+  },
+
   module: {
     rules: [
       {
@@ -64,8 +81,5 @@ export default defineConfig({
         minimizerOptions: { targets },
       }),
     ],
-  },
-  experiments: {
-    css: true,
   },
 });
